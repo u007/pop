@@ -38,7 +38,12 @@ func (q *Query) Find(model interface{}, id interface{}) error {
 //
 //	c.First(&User{})
 func (c *Connection) First(model interface{}) error {
-	return Q(c).First(model)
+	err := Q(c).First(model)
+	if CacheEnabled {
+		CacheModel(model)
+	}
+
+	return err
 }
 
 // First record of the model in the database that matches the query.
