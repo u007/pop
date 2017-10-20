@@ -3,7 +3,7 @@ package pop
 import (
 	"fmt"
 
-	. "github.com/markbates/pop/columns"
+	"github.com/markbates/pop/columns"
 	"github.com/markbates/validate"
 	uuid "github.com/satori/go.uuid"
 )
@@ -11,11 +11,13 @@ import (
 //forces created_at, updated_at on create/update
 var TouchTimeOnSave = true
 
+// Reload fetch fresh data for a given model, using its ID
 func (c *Connection) Reload(model interface{}) error {
 	sm := Model{Value: model}
 	return c.Find(model, sm.ID())
 }
 
+// Exec runs the given query
 func (q *Query) Exec() error {
 	return q.Connection.timeFunc("Exec", func() error {
 		sql, args := q.ToSQL(nil)
@@ -45,6 +47,8 @@ func (q *Query) ExecWithCount64() (int64, error) {
 	})
 }
 
+// ValidateAndSave applies validation rules on the given entry, then save it
+// if the validation succeed, excluding the given columns.
 func (c *Connection) ValidateAndSave(model interface{}, excludeColumns ...string) (*validate.Errors, error) {
 	sm := &Model{Value: model}
 	verrs, err := sm.validateSave(c)
@@ -59,6 +63,8 @@ func (c *Connection) ValidateAndSave(model interface{}, excludeColumns ...string
 
 var emptyUUID = uuid.Nil.String()
 
+// Save wraps the Create and Update methods. It executes a Create if no ID is provided with the entry;
+// or issues an Update otherwise.
 func (c *Connection) Save(model interface{}, excludeColumns ...string) error {
 	sm := &Model{Value: model}
 	id := sm.ID()
@@ -69,6 +75,8 @@ func (c *Connection) Save(model interface{}, excludeColumns ...string) error {
 	return c.Update(model, excludeColumns...)
 }
 
+// ValidateAndCreate applies validation rules on the given entry, then creates it
+// if the validation succeed, excluding the given columns.
 func (c *Connection) ValidateAndCreate(model interface{}, excludeColumns ...string) (*validate.Errors, error) {
 	sm := &Model{Value: model}
 	verrs, err := sm.validateCreate(c)
@@ -81,6 +89,8 @@ func (c *Connection) ValidateAndCreate(model interface{}, excludeColumns ...stri
 	return verrs, c.Create(model, excludeColumns...)
 }
 
+// Create add a new given entry to the database, excluding the given columns.
+// It updates `created_at` and `updated_at` columns automatically.
 func (c *Connection) Create(model interface{}, excludeColumns ...string) error {
 	return c.timeFunc("Create", func() error {
 		var err error
@@ -94,7 +104,7 @@ func (c *Connection) Create(model interface{}, excludeColumns ...string) error {
 			return err
 		}
 
-		cols := ColumnsForStructWithAlias(model, sm.TableName(), sm.As)
+		cols := columns.ColumnsForStructWithAlias(model, sm.TableName(), sm.As)
 		cols.Remove(excludeColumns...)
 
 		if TouchTimeOnSave {
@@ -114,6 +124,8 @@ func (c *Connection) Create(model interface{}, excludeColumns ...string) error {
 	})
 }
 
+// ValidateAndUpdate applies validation rules on the given entry, then update it
+// if the validation succeed, excluding the given columns.
 func (c *Connection) ValidateAndUpdate(model interface{}, excludeColumns ...string) (*validate.Errors, error) {
 	sm := &Model{Value: model}
 	verrs, err := sm.validateUpdate(c)
@@ -126,6 +138,8 @@ func (c *Connection) ValidateAndUpdate(model interface{}, excludeColumns ...stri
 	return verrs, c.Update(model, excludeColumns...)
 }
 
+// Update writes changes from an entry to the database, excluding the given columns.
+// It updates the `updated_at` column automatically.
 func (c *Connection) Update(model interface{}, excludeColumns ...string) error {
 	return c.timeFunc("Update", func() error {
 		var err error
@@ -138,7 +152,7 @@ func (c *Connection) Update(model interface{}, excludeColumns ...string) error {
 			return err
 		}
 
-		cols := ColumnsForStructWithAlias(model, sm.TableName(), sm.As)
+		cols := columns.ColumnsForStructWithAlias(model, sm.TableName(), sm.As)
 		cols.Remove("id", "created_at")
 		cols.Remove(excludeColumns...)
 
@@ -157,6 +171,7 @@ func (c *Connection) Update(model interface{}, excludeColumns ...string) error {
 	})
 }
 
+// Destroy deletes a given entry from the database
 func (c *Connection) Destroy(model interface{}) error {
 	return c.timeFunc("Destroy", func() error {
 		var err error
