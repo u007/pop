@@ -127,9 +127,7 @@ func (c Columns) String() string {
 	for _, t := range c.Cols {
 		xs = append(xs, t.Name)
 	}
-	if SortColumns {
-		sort.Strings(xs)
-	}
+	sort.Strings(xs)
 	return strings.Join(xs, ", ")
 }
 
@@ -138,9 +136,7 @@ func (c Columns) SymbolizedString() string {
 	for _, t := range c.Cols {
 		xs = append(xs, ":"+t.Name)
 	}
-	if SortColumns {
-		sort.Strings(xs)
-	}
+	sort.Strings(xs)
 	return strings.Join(xs, ", ")
 }
 

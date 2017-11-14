@@ -14,8 +14,6 @@ func (c WriteableColumns) UpdateString() string {
 	for _, t := range c.Cols {
 		xs = append(xs, t.UpdateString())
 	}
-	if SortColumns {
-		sort.Strings(xs)
-	}
+	sort.Strings(xs)
 	return strings.Join(xs, ", ")
 }
