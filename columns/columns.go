@@ -7,6 +7,8 @@ import (
 	"sync"
 )
 
+var SortColumns = true
+
 type Columns struct {
 	Cols       map[string]*Column
 	lock       *sync.RWMutex
@@ -122,7 +124,9 @@ func (c Columns) String() string {
 	for _, t := range c.Cols {
 		xs = append(xs, t.Name)
 	}
-	sort.Strings(xs)
+	if SortColumns {
+		sort.Strings(xs)
+	}
 	return strings.Join(xs, ", ")
 }
 
@@ -131,7 +135,9 @@ func (c Columns) SymbolizedString() string {
 	for _, t := range c.Cols {
 		xs = append(xs, ":"+t.Name)
 	}
-	sort.Strings(xs)
+	if SortColumns {
+		sort.Strings(xs)
+	}
 	return strings.Join(xs, ", ")
 }
 

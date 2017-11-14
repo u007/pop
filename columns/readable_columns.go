@@ -14,6 +14,9 @@ func (c ReadableColumns) SelectString() string {
 	for _, t := range c.Cols {
 		xs = append(xs, t.SelectSQL)
 	}
-	sort.Strings(xs)
+
+	if SortColumns {
+		sort.Strings(xs)
+	}
 	return strings.Join(xs, ", ")
 }
