@@ -11,8 +11,13 @@ type ReadableColumns struct {
 
 func (c ReadableColumns) SelectString() string {
 	xs := []string{}
-	for _, t := range c.Cols {
-		xs = append(xs, t.SelectSQL)
+
+	for i := range c.ColSequence {
+		name := c.ColSequence[i]
+
+		if col, ok := c.Cols[name]; ok {
+			xs = append(xs, col.SelectSQL)
+		}
 	}
 
 	if SortColumns {

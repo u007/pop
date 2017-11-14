@@ -10,10 +10,11 @@ import (
 var SortColumns = true
 
 type Columns struct {
-	Cols       map[string]*Column
-	lock       *sync.RWMutex
-	TableName  string
-	TableAlias string
+	Cols        map[string]*Column
+	lock        *sync.RWMutex
+	TableName   string
+	TableAlias  string
+	ColSequence []string
 }
 
 // Add a column to the list.
@@ -84,6 +85,7 @@ func (c *Columns) Add(names ...string) []*Column {
 			c.Cols[col.Name] = col
 		}
 		ret = append(ret, col)
+		c.ColSequence = append(c.ColSequence, col.Name)
 	}
 
 	c.lock.Unlock()
@@ -111,6 +113,7 @@ func (c Columns) Writeable() *WriteableColumns {
 
 func (c Columns) Readable() *ReadableColumns {
 	w := &ReadableColumns{NewColumnsWithAlias(c.TableName, c.TableAlias)}
+	w.ColSequence = c.ColSequence
 	for _, col := range c.Cols {
 		if col.Readable {
 			w.Cols[col.Name] = col
