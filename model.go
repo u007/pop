@@ -133,7 +133,6 @@ func (m *Model) setID(i interface{}) {
 func (m *Model) touchCreatedAt() {
 	fbn, err := m.fieldByName("CreatedAt")
 	if err == nil {
-		var thetime time.Time
 		if UTCTime {
 			fbn.Set(reflect.ValueOf(time.Now().UTC()))
 		} else {
@@ -145,7 +144,6 @@ func (m *Model) touchCreatedAt() {
 func (m *Model) touchUpdatedAt() {
 	fbn, err := m.fieldByName("UpdatedAt")
 	if err == nil {
-		var thetime time.Time
 		if UTCTime {
 			fbn.Set(reflect.ValueOf(time.Now().UTC()))
 		} else {
