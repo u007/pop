@@ -10,6 +10,7 @@ import (
 
 //forces created_at, updated_at on create/update
 var TouchTimeOnSave = true
+var UTCTime = true
 
 // Reload fetch fresh data for a given model, using its ID
 func (c *Connection) Reload(model interface{}) error {
