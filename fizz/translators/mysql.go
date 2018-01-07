@@ -11,12 +11,14 @@ import (
 )
 
 type MySQL struct {
-	Schema Schema
+	Schema SchemaQuery
 }
 
 func NewMySQL(url, name string) *MySQL {
+	schema := &mysqlSchema{Schema{URL: url, Name: name, schema: map[string]*fizz.Table{}}}
+	schema.Builder = schema
 	return &MySQL{
-		Schema: &mysqlSchema{URL: url, Name: name, schema: map[string]*fizz.Table{}},
+		Schema: schema,
 	}
 }
 
@@ -128,6 +130,14 @@ func (p *MySQL) DropIndex(t fizz.Table) (string, error) {
 }
 
 func (p *MySQL) RenameIndex(t fizz.Table) (string, error) {
+	schema := p.Schema.(*mysqlSchema)
+	version, err := schema.Version()
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	if !strings.HasPrefix(version, "5.7") {
+		return "", errors.New("renaming indexes on MySQL versions less than 5.7 is not supported by fizz; use raw SQL instead")
+	}
 	ix := t.Indexes
 	if len(ix) < 2 {
 		return "", errors.New("Not enough indexes supplied!")
