@@ -2,7 +2,7 @@ version: '2'
 
 services:
   mysql:
-    image: mysql:5.6
+    image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=pop_test
@@ -21,3 +21,11 @@ services:
       - "5432:5432"
     volumes:
       - ./sqldumps:/docker-entrypoint-initdb.d
+  cockroach:
+    image: cockroachdb/cockroach:v1.1.1
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+    volumes:
+      - "./cockroach-data/roach1:/cockroach/cockroach-data"
+    command: start --insecure
