@@ -114,6 +114,7 @@ func (m *Model) typeName(t reflect.Type) string {
 		tableNameAble := (*TableNameAble)(nil)
 		if el.Implements(reflect.TypeOf(tableNameAble).Elem()) {
 			v := reflect.New(el)
+			fmt.Println("v class", v, v.Type())
 			out := v.MethodByName("TableName").Call([]reflect.Value{})
 			name := out[0].String()
 			if tableMap[el.Name()] == "" {
