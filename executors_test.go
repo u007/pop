@@ -3,9 +3,9 @@ package pop_test
 import (
 	"testing"
 
-	"github.com/markbates/pop"
-	"github.com/markbates/pop/nulls"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gobuffalo/pop"
+	"github.com/gobuffalo/pop/nulls"
+	"github.com/gobuffalo/uuid"
 	"github.com/stretchr/testify/require"
 )
 

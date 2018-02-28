@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/markbates/pop/associations"
+	"github.com/gobuffalo/pop/associations"
 
-	"github.com/satori/go.uuid"
+	"github.com/gobuffalo/uuid"
 )
 
 type fooBelongsTo struct {

@@ -1,4 +1,4 @@
-# POP [![GoDoc](https://godoc.org/github.com/markbates/pop?status.svg)](https://godoc.org/github.com/markbates/pop) [![Build Status](https://travis-ci.org/markbates/pop.svg)](https://travis-ci.org/markbates/pop)
+# POP [![GoDoc](https://godoc.org/github.com/gobuffalo/pop?status.svg)](https://godoc.org/github.com/gobuffalo/pop) [![Build Status](https://travis-ci.org/gobuffalo/pop.svg)](https://travis-ci.org/gobuffalo/pop)
 
 # !!NOTICE: THIS REPO HAS MOVED!!
 
@@ -101,8 +101,8 @@ Pop features CLI support via the `soda` command for the following operations:
 ### Installing CLI Support
 
 ```bash
-$ go get github.com/markbates/pop/...
-$ go install github.com/markbates/pop/soda
+$ go get github.com/gobuffalo/pop/...
+$ go install github.com/gobuffalo/pop/soda
 ```
 
 ### Creating Databases
