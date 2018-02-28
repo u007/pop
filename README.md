@@ -1,5 +1,15 @@
 # POP [![GoDoc](https://godoc.org/github.com/markbates/pop?status.svg)](https://godoc.org/github.com/markbates/pop) [![Build Status](https://travis-ci.org/markbates/pop.svg)](https://travis-ci.org/markbates/pop)
 
+# !!NOTICE: THIS REPO HAS MOVED!!
+
+The new location for this repository is [https://github.com/gobuffalo/pop](https://github.com/gobuffalo/pop).
+
+We recommend you migrate your applications over to this new repository as soon as you can.
+
+This repository is now in **READ-ONLY** mode, and will no longer be updated.
+
+See [https://github.com/markbates/pop/issues/164](https://github.com/markbates/pop/issues/164) for more details.
+
 ## A Tasty Treat For All Your Database Needs
 
 So what does Pop do exactly? Well, it wraps the absolutely amazing [https://github.com/jmoiron/sqlx](https://github.com/jmoiron/sqlx) library. It cleans up some of the common patterns and workflows usually associated with dealing with databases in Go.
@@ -300,17 +310,17 @@ type Address struct {
 type Addresses []Address
 ```
 
-  **has_many**: will load all records from the `books` table that have a column named `user_id` or the column specified with **fk_id** that matches the `User.ID` value.    
-  
+  **has_many**: will load all records from the `books` table that have a column named `user_id` or the column specified with **fk_id** that matches the `User.ID` value.
+
   **belongs_to**: will load a record from `users` table that have a column named `id` that matches with `Book.UserID` value.
-  
-  **has_one**: will load a record from the `songs` table that have a column named `user_id` or the column specified with **fk_id** that matches the `User.ID` value.    
-  
-  **many_to_many**: will load all records from the `addresses` table through the table `users_addresses`. Table `users_addresses` MUST define `address_id`  and `user_id` columns to match `User.ID` and `Address.ID` values. You can also define a **fk_id** tag that will be used in the target association i.e `addresses` table.    
-  
-  **fk_id**: defines the column name in the target association that matches model `ID`. In the example above `Song` has a column named `u_id` that represents `id` of `users` table. When loading `FavoriteSong`, `u_id` will be used instead of `user_id`.  
-  
-  **order_by**: used in `has_many` and `many_to_many` to indicate the order for the association when loading. The format to use is  `order_by:"<column_name> <asc | desc>"` 
+
+  **has_one**: will load a record from the `songs` table that have a column named `user_id` or the column specified with **fk_id** that matches the `User.ID` value.
+
+  **many_to_many**: will load all records from the `addresses` table through the table `users_addresses`. Table `users_addresses` MUST define `address_id`  and `user_id` columns to match `User.ID` and `Address.ID` values. You can also define a **fk_id** tag that will be used in the target association i.e `addresses` table.
+
+  **fk_id**: defines the column name in the target association that matches model `ID`. In the example above `Song` has a column named `u_id` that represents `id` of `users` table. When loading `FavoriteSong`, `u_id` will be used instead of `user_id`.
+
+  **order_by**: used in `has_many` and `many_to_many` to indicate the order for the association when loading. The format to use is  `order_by:"<column_name> <asc | desc>"`
 
 
 ```go
@@ -338,7 +348,7 @@ func (u *User) BeforeSave(tx *pop.Connection) error {
 	}
 
 	u.Password = string(hash)
-	
+
 	return nil
 }
 ```
