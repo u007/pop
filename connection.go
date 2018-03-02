@@ -21,6 +21,8 @@ type Connection struct {
 	Dialect dialect
 	Elapsed int64
 	TX      *Tx
+
+	Context TxContext
 }
 
 func (c *Connection) String() string {
@@ -142,6 +144,8 @@ func (c *Connection) NewTransaction() (*Connection, error) {
 			Store:   tx,
 			Dialect: c.Dialect,
 			TX:      tx,
+
+			Context: c.Context,
 		}
 	} else {
 		cn = c
@@ -163,6 +167,8 @@ func (c *Connection) Rollback(fn func(tx *Connection)) error {
 			Store:   tx,
 			Dialect: c.Dialect,
 			TX:      tx,
+
+			Context: c.Context,
 		}
 	} else {
 		cn = c

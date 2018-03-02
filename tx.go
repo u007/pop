@@ -15,6 +15,8 @@ func init() {
 type Tx struct {
 	ID int
 	*sqlx.Tx
+
+	Context TxContext
 }
 
 func newTX(db *dB) (*Tx, error) {
