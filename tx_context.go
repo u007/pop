@@ -11,7 +11,7 @@ type TxContext interface {
 	Request() *http.Request
 	// Session() *buffalo.Session
 	// Cookies() *buffalo.Cookies
-	Params() ParamValues
+	// Params() ParamValues
 	Param(string) string
 	Set(string, interface{})
 	LogField(string, interface{})
