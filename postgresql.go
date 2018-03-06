@@ -2,6 +2,7 @@ package pop
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -74,6 +75,14 @@ func (p *postgresql) SelectOne(s store, model *Model, query Query) error {
 
 func (p *postgresql) SelectMany(s store, models *Model, query Query) error {
 	return genericSelectMany(s, models, query)
+}
+
+func (p *postgresql) ContextSelectOne(c context.Context, s store, model *Model, query Query) error {
+	return genericContextSelectOne(c, s, model, query)
+}
+
+func (p *postgresql) ContextSelectMany(c context.Context, s store, models *Model, query Query) error {
+	return genericContextSelectMany(c, s, models, query)
 }
 
 func (p *postgresql) CreateDB() error {

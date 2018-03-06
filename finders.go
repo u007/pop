@@ -1,6 +1,7 @@
 package pop
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"reflect"
@@ -115,6 +116,39 @@ func (c *Connection) All(models interface{}) error {
 //
 //	q.Where("name = ?", "mark").All(&[]User{})
 func (q *Query) All(models interface{}) error {
+	err := q.Connection.timeFunc("All", func() error {
+		m := &Model{Value: models}
+		err := q.Connection.Dialect.SelectMany(q.Connection.Store, m, *q)
+		if err == nil && q.Paginator != nil {
+			ct, err := q.Count(models)
+			if err == nil {
+				q.Paginator.TotalEntriesSize = ct
+				st := reflect.ValueOf(models).Elem()
+				q.Paginator.CurrentEntriesSize = st.Len()
+				q.Paginator.TotalPages = (q.Paginator.TotalEntriesSize / q.Paginator.PerPage)
+				if q.Paginator.TotalEntriesSize%q.Paginator.PerPage > 0 {
+					q.Paginator.TotalPages = q.Paginator.TotalPages + 1
+				}
+			}
+		}
+		if err != nil {
+			return err
+		}
+		return m.afterFind(q.Connection)
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if q.eager {
+		return q.eagerAssociations(models)
+	}
+
+	return nil
+}
+
+func (q *Query) ContextAll(qContext context.Context, models interface{}) error {
 	err := q.Connection.timeFunc("All", func() error {
 		m := &Model{Value: models}
 		err := q.Connection.Dialect.SelectMany(q.Connection.Store, m, *q)

@@ -1,6 +1,7 @@
 package pop
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -63,6 +64,14 @@ func (m *mysql) SelectOne(s store, model *Model, query Query) error {
 
 func (m *mysql) SelectMany(s store, models *Model, query Query) error {
 	return errors.Wrap(genericSelectMany(s, models, query), "mysql select many")
+}
+
+func (m *mysql) ContextSelectOne(c context.Context, s store, model *Model, query Query) error {
+	return errors.Wrap(genericContextSelectOne(c, s, model, query), "mysql select one")
+}
+
+func (m *mysql) ContextSelectMany(c context.Context, s store, models *Model, query Query) error {
+	return errors.Wrap(genericContextSelectMany(c, s, models, query), "mysql select many")
 }
 
 // CreateDB creates a new database, from the given connection credentials

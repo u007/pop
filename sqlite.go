@@ -3,6 +3,7 @@
 package pop
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -56,6 +57,18 @@ func (m *sqlite) Update(s store, model *Model, cols columns.Columns) error {
 func (m *sqlite) Destroy(s store, model *Model) error {
 	return m.locker(m.smGil, func() error {
 		return errors.Wrap(genericDestroy(s, model), "sqlite destroy")
+	})
+}
+
+func (m *sqlite) ContextSelectOne(c context.Context, s store, model *Model, query Query) error {
+	return m.locker(m.smGil, func() error {
+		return errors.Wrap(genericContextSelectOne(c, s, model, query), "sqlite select one")
+	})
+}
+
+func (m *sqlite) ContextSelectMany(c context.Context, s store, models *Model, query Query) error {
+	return m.locker(m.smGil, func() error {
+		return errors.Wrap(genericContextSelectMany(c, s, models, query), "sqlite select many")
 	})
 }
 

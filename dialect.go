@@ -1,6 +1,7 @@
 package pop
 
 import (
+	"context"
 	"encoding/gob"
 	"fmt"
 	"io"
@@ -25,6 +26,8 @@ type dialect interface {
 	Destroy(store, *Model) error
 	SelectOne(store, *Model, Query) error
 	SelectMany(store, *Model, Query) error
+	ContextSelectOne(context.Context, store, *Model, Query) error
+	ContextSelectMany(context.Context, store, *Model, Query) error
 	CreateDB() error
 	DropDB() error
 	DumpSchema(io.Writer) error
@@ -101,6 +104,26 @@ func genericDestroy(s store, model *Model) error {
 func genericExec(s store, stmt string) error {
 	Log(stmt)
 	_, err := s.Exec(stmt)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+func genericContextSelectOne(c context.Context, s store, model *Model, query Query) error {
+	sql, args := query.ToSQL(model)
+	Log(sql, args...)
+	err := s.Get(model.Value, sql, args...)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+func genericContextSelectMany(c context.Context, s store, models *Model, query Query) error {
+	sql, args := query.ToSQL(models)
+	Log(sql, args...)
+	err := s.Select(models.Value, sql, args...)
 	if err != nil {
 		return errors.WithStack(err)
 	}
