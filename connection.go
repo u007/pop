@@ -1,6 +1,7 @@
 package pop
 
 import (
+	"context"
 	"sync/atomic"
 	"time"
 
@@ -65,6 +66,35 @@ func NewConnection(deets *ConnectionDetails) (*Connection, error) {
 	return c, nil
 }
 
+func ConnectContext(dbContext context.Context, e string) (*Connection, error) {
+	if len(Connections) == 0 {
+		err := LoadConfigFile()
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+	}
+	e = defaults.String(e, "development")
+	c := Connections[e]
+	if c == nil {
+		return c, errors.Errorf("Could not find connection named %s!", e)
+	}
+
+	db, err := sqlx.ConnectContext(dbContext, c.Dialect.Details().Dialect, c.Dialect.URL())
+	if err == nil {
+		ConfigureDBConn(db, c)
+		c.Store = &dB{db}
+	}
+
+	return c, errors.Wrapf(err, "couldn't open connection for %s", e)
+}
+
+func ConfigureDBConn(db *sqlx.DB, c *Connection) error {
+	db.SetMaxOpenConns(c.Dialect.Details().Pool)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(time.Minute)
+	return nil
+}
+
 // Connect takes the name of a connection, default is "development", and will
 // return that connection from the available `Connections`. If a connection with
 // that name can not be found an error will be returned. If a connection is
@@ -91,14 +121,13 @@ func (c *Connection) Open() error {
 	if c.Store != nil {
 		return nil
 	}
-	db, err := sqlx.Open(c.Dialect.Details().Dialect, c.Dialect.URL())
-	db.SetMaxOpenConns(c.Dialect.Details().Pool)
-	db.SetMaxIdleConns(5)
-	db.SetConnMaxLifetime(time.Minute)
 
+	db, err := sqlx.Open(c.Dialect.Details().Dialect, c.Dialect.URL())
 	if err == nil {
+		ConfigureDBConn(db, c)
 		c.Store = &dB{db}
 	}
+
 	return errors.Wrap(err, "coudn't connection to database")
 }
 
