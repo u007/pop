@@ -16,7 +16,7 @@ type Tx struct {
 	ID int
 	*sqlx.Tx
 
-	Context TxContext
+	Context interface{}
 }
 
 func newTX(db *dB) (*Tx, error) {

@@ -22,7 +22,7 @@ type Connection struct {
 	Elapsed int64
 	TX      *Tx
 
-	Context TxContext
+	Context interface{}
 }
 
 func (c *Connection) String() string {
