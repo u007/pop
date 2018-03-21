@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/gobuffalo/pop"
@@ -28,6 +29,7 @@ var LoadCmd = &cobra.Command{
 
 		err = c.Dialect.LoadSchema(f)
 		if err != nil {
+			fmt.Printf("unable to load schema: %v, error: %+v", loadOptions.input, err)
 			return err
 		}
 		return nil
