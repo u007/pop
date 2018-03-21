@@ -1,4 +1,4 @@
-// +build sqlite !appengine !appenginevm
+// +build sqlite
 
 package pop
 
@@ -21,6 +21,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
 )
+
+func init() {
+	AvailableDialects = append(AvailableDialects, "sqlite3")
+}
 
 var _ dialect = &sqlite{}
 
