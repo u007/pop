@@ -17,6 +17,7 @@ func init() {
 }
 
 type dialect interface {
+	Name() string
 	URL() string
 	MigrationURL() string
 	Details() *ConnectionDetails
