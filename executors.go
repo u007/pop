@@ -122,10 +122,10 @@ func (c *Connection) Create(model interface{}, excludeColumns ...string) error {
 				cols.Remove(excludeColumns...)
 			}
 
-            if TouchTimeOnSave {
-                m.touchCreatedAt()
-                m.touchUpdatedAt()
-            }
+			if TouchTimeOnSave {
+				m.touchCreatedAt()
+				m.touchUpdatedAt()
+			}
 
 			if err = c.Dialect.Create(c.Store, m, cols); err != nil {
 				return err
@@ -176,9 +176,9 @@ func (c *Connection) Update(model interface{}, excludeColumns ...string) error {
 				cols.Remove(excludeColumns...)
 			}
 
-            if TouchTimeOnSave {
-                m.touchUpdatedAt()
-            }
+			if TouchTimeOnSave {
+				m.touchUpdatedAt()
+			}
 
 			if err = c.Dialect.Update(c.Store, m, cols); err != nil {
 				return err
