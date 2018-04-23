@@ -82,7 +82,7 @@ func (m Migrator) Down(step int) error {
 	c := m.Connection
 	return m.exec(func() error {
 		mtn := c.MigrationTableName()
-		count, err := c.Count(mtn)
+		_, err := c.Count(mtn)
 		if err != nil {
 			return errors.Wrap(err, "migration down: unable count existing migration")
 		}
