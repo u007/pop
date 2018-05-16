@@ -1,7 +1,6 @@
 package pop
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"io"
