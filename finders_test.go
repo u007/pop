@@ -535,6 +535,8 @@ func Test_Count_Disregards_Pagination(t *testing.T) {
 		q := tx.Paginate(1, 3)
 		q.All(&first_users)
 
+		a.Equal(len(names), q.Paginator.TotalEntriesSize) //ensure paginator populates count
+
 		a.Equal(3, len(first_users))
 		totalFirstPage := q.Paginator.TotalPages
 
