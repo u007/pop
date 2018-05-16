@@ -167,6 +167,7 @@ func Test_Find_Eager_Has_One(t *testing.T) {
 		a.Equal(u.FavoriteSong.ID, uuid.Nil)
 
 		err = tx.RawQuery("select * from users where id=?", uid).Eager("FavoriteSong").First(&u)
+		a.NoError(err)
 		a.Equal(u.FavoriteSong.ID, coolSong.ID)
 	})
 }
@@ -290,7 +291,7 @@ func Test_Find_Eager_Many_To_Many(t *testing.T) {
 		err = tx.Create(&ownerProperty2)
 		a.NoError(err)
 
-		//eager should work with rawquery for list
+		//eager should work with rawquery
 		uid := u.ID
 		u = User{}
 		err = tx.RawQuery("select * from users where id=?", uid).Eager("Houses").First(&u)
