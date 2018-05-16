@@ -28,11 +28,11 @@ func newSQLBuilder(q Query, m *Model, addColumns ...string) *sqlBuilder {
 }
 
 func hasLimitOrOffset(sqlString string) bool {
-	if matched, _ := regexp.MatchString(".* limit [0-9]*$", sqlString); matched {
+	if matched, _ := regexp.MatchString("(?i).* limit [0-9]*$", sqlString); matched {
 		return matched
 	}
 
-	if matched, _ := regexp.MatchString(".* offset [0-9]*$", sqlString); matched {
+	if matched, _ := regexp.MatchString("(?i).* offset [0-9]*$", sqlString); matched {
 		return matched
 	}
 	return false
