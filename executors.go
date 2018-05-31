@@ -12,7 +12,7 @@ import (
 var TouchTimeOnSave = true
 var UTCTime = true
 
-// Reload fetch fresh data for a given model, using its ID
+// Reload fetch fresh data for a given model, using its ID.
 func (c *Connection) Reload(model interface{}) error {
 	sm := Model{Value: model}
 	return sm.iterate(func(m *Model) error {
@@ -20,7 +20,7 @@ func (c *Connection) Reload(model interface{}) error {
 	})
 }
 
-// Exec runs the given query
+// Exec runs the given query.
 func (q *Query) Exec() error {
 	return q.Connection.timeFunc("Exec", func() error {
 		sql, args := q.ToSQL(nil)
@@ -30,6 +30,8 @@ func (q *Query) Exec() error {
 	})
 }
 
+// ExecWithCount runs the given query, and returns the amount of
+// affected rows.
 func (q *Query) ExecWithCount() (int, error) {
 	count, err := q.ExecWithCount64()
 	return int(count), err
