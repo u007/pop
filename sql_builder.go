@@ -2,6 +2,7 @@ package pop
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 	"sync"
@@ -31,20 +32,21 @@ var (
 	RegexpMatchLimit    = regexp.MustCompile("(?i).*\\s+limit\\s+[0-9]*(\\s?,\\s?[0-9]*)?$")
 	RegexpMatchOffset   = regexp.MustCompile("(?i).*\\s+offset\\s+[0-9]*$")
 	RegexpMatchRowsOnly = regexp.MustCompile("(?i).*\\s+rows only$")
+	RegexpMatchNames    = regexp.MustCompile("(?i).*;+.*") // https://play.golang.org/p/FAmre5Sjin5
 )
 
 func hasLimitOrOffset(sqlString string) bool {
 	trimmedSQL := strings.TrimSpace(sqlString)
-	if matched := RegexpMatchLimit.MatchString(trimmedSQL); matched {
-		return matched
+	if RegexpMatchLimit.MatchString(trimmedSQL) {
+		return true
 	}
 
-	if matched := RegexpMatchOffset.MatchString(trimmedSQL); matched {
-		return matched
+	if RegexpMatchOffset.MatchString(trimmedSQL) {
+		return true
 	}
 
-	if matched := RegexpMatchRowsOnly.MatchString(trimmedSQL); matched {
-		return matched
+	if RegexpMatchRowsOnly.MatchString(trimmedSQL) {
+		return true
 	}
 
 	return false
@@ -186,7 +188,14 @@ func (sq *sqlBuilder) buildGroupClauses(sql string) string {
 func (sq *sqlBuilder) buildOrderClauses(sql string) string {
 	oc := sq.Query.orderClauses
 	if len(oc) > 0 {
-		sql = fmt.Sprintf("%s ORDER BY %s", sql, oc.Join(", "))
+		orderSQL := oc.Join(", ")
+		if RegexpMatchNames.MatchString(orderSQL) {
+			warningMsg := fmt.Sprintf("Order clause(s) contains invalid characters: %s", orderSQL)
+			log.Println(warningMsg)
+			return sql
+		}
+
+		sql = fmt.Sprintf("%s ORDER BY %s", sql, orderSQL)
 		for _, arg := range oc.Args() {
 			sq.args = append(sq.args, arg)
 		}
