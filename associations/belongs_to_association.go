@@ -3,6 +3,7 @@ package associations
 import (
 	"fmt"
 	"reflect"
+	"github.com/markbates/inflect"
 
 	"github.com/gobuffalo/pop/nulls"
 )
@@ -25,9 +26,13 @@ func init() {
 
 func belongsToAssociationBuilder(p associationParams) (Association, error) {
 	fval := p.modelValue.FieldByName(p.field.Name)
-	ownerIDField := fmt.Sprintf("%s%s", p.field.Name, "ID")
-	if p.popTags.Find("fk_id").Value != "" {
-		ownerIDField = p.popTags.Find("fk_id").Value
+	ownerDBIDField := p.popTags.Find("fk_id").Value
+	var ownerIDField string
+	if ownerDBIDField != "" {
+		tn := inflect. .Underscore(ownerDBIDField)
+		// ownerIDField = tn.
+	} else {
+		ownerIDField = fmt.Sprintf("%s%s", p.field.Name, "ID")
 	}
 
 	if _, found := p.modelType.FieldByName(ownerIDField); !found {
@@ -45,7 +50,7 @@ func belongsToAssociationBuilder(p associationParams) (Association, error) {
 		ownerModel: fval,
 		ownerType:  fval.Type(),
 		ownerID:    f,
-		fkID:       ownerIDField,
+		fkID:       ownerDBIDField,
 		ownedModel: p.model,
 		associationSkipable: &associationSkipable{
 			skipped: skipped,
